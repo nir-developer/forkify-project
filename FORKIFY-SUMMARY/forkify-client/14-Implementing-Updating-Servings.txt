@@ -1,0 +1,64 @@
+LECTURE 302 - Feature 4: Updating Servings 
+---------------------------------------------
+
+
+TASK LIST: 
+
+
+        1.Model: Implement the updateServings(newServings) function: 
+
+        2.Controller:Create the controlServings :       
+                 
+               2.1   Render the recipe with the new updated ingredients and servings 
+                     NOTE: FOR NOW RE-RENDER THE ENTIRE RECIPE!NEXT LECTURE EFFIENT WAY - ONLY RENDER THE TEXT AND ATTRIBUTES ! 
+                     NOTE - FOR NOW WITHOUT BINDING IT - INSTEAD CALL IT MANUALLY FROM THE controlRecipes - right after the Recipe view rendered  
+                     TEST IN THE VIEW: OK ! servings value rendered doubled and each quantity for each ingredient 
+
+             
+               2.2 Bind the controlServings handler to the RecipeView 
+                         (NOTE: now I have 2 handlers are subscribed to this RecipeView publisher)
+
+
+
+            3.VIEW: RecipeView : 
+                    Implement the addHandlerUpdateServings method 
+                        add Event listener on this._parentElement  'click' on the common parent of all update buttons 
+                        use event delegation to response the correct button 
+
+
+
+
+
+                
+
+*******************************************************************
+        1.Model: Implement the updateServings(newServings) function: 
+************************************************************************
+
+
+
+        Maintain the Ratio ! 
+                export const updateServings = function(newServings)
+                {
+
+                //newQt = oldQt * newServings / oldServings // 2 * 8  / 4 = 4 
+                state.recipe.ingredients.forEach(ing => {
+                        const oldQty = ing.quantity; 
+                        //const newQty = (oldQty / oldServings )  * newServings
+                        const newQty = ing.quantity * newServings / state.recipe.servings
+                
+                        //UPDATE QTY 
+                        ing.quantity = newQty;
+                })
+
+                
+                state.recipe.servings = newServings
+                console.log(`new servings: `, state.recipe.servings)
+                console.log(state.recipe.ingredients)
+
+                }
+
+
+
+
+

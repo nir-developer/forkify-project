@@ -1,0 +1,25 @@
+
+KEY NOTES: 
+
+        - Problem with current MVC implementation: 
+                - The recipeController has UI logic : listening for events(hashchanged ,load)
+
+        SOLUTION: 
+                  separate the logics of listening for events(UI LOGIC) 
+                  and handling events(Application Logic)
+
+
+        - Publisher(UI LOGIC - VIEW) : 
+                 Knows WHEN to react to an event - but does not know  HOW 
+
+         -Subscriber(APP LOGIC - CONTROLLER)
+                Knows HOW to react to an event
+        
+
+
+TASK LITS :
+
+        1.Refactor: Move the logic of listening to events from recipeController 
+          into the recipeView new  method : addHandlerRender(handler)
+
+        2.

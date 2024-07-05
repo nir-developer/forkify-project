@@ -1,0 +1,75 @@
+LECTURE: 300 - EASY - SHORT
+
+
+
+
+KEY NOTES:                
+
+        - WHY PAGINATION? 
+                
+                Pagination in Client App are for UX - easy friendly for the user 
+
+
+
+        - WHY DO I NEED THE CURRENT PAGE IN THE APPLICATION STATE? 
+                
+                SINCE CURRENT PAGE NEED TO BE STORED IN THE STATE!!!! 
+                
+                SINCE I NEED LATER TO RENDER THE PAGINATION BUTTONS BASED ON THIS VALUE!
+        
+        
+        
+
+        - No async function! I just need to get the pages from the current state.search.results ! 
+
+            THE new model function getSearchResultsPage  BOTH UPDATE AND RETURN 
+            AND NOT ONLY UPDATE THE STATE LIKE the loadRecipes and loadSearchResults functions 
+            BECAUSE I DONT STORE THE VALUES IT CALCULATES -FIRST PAGE AND LAST PAGE IN THE STATE 
+            => I MUST RETURN THEM TO THE CONTROLLER - SINCE OTHERWISE IT WILL NOT BE ABLE TO PICK THEM FOR THE STATE MANUALLY 
+            
+            
+
+        - Pages are in the range of 1,2,3,,, , 
+        
+        - Results from the state.search.results array  are 0,1,2,3,,,,
+
+        - Add the RES_PER_PAGE in the config.js 
+
+
+        - Implementation:  calculate first page and last page values based on a given page 
+
+                EXAMPLE:
+                         given page = 1 
+
+                         => start = (page -1) * state.search.resultsPerPage = 0
+
+                         => end = page * state.search.resultsPerPage = 9 
+
+
+
+                
+
+TASK LIST: 
+
+
+        1. Update the config.js : Add constant RES_PER_PAGE=10 
+
+      
+        2.Update the Model : 
+
+                2.1 Add the current page to the state and set it's default initial value to 1 : state.search.page = 1
+
+                2.2 Create the function(not async) :
+
+                       
+                        export const getSearchResultsPage  = function(page = state.search.page) 
+                        {
+                                const start = (page - 1) * RES_PER_PAGE; 
+                                const end = page * RES_PER_PAGE; 
+
+                                return 
+
+                        }
+
+
+

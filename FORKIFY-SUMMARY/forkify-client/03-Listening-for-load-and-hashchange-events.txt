@@ -1,0 +1,49 @@
+
+    LAST 2 LECTURES I IMPLEMENTED: 
+    1) Load Recipe from API 
+    2) Render Recipe 
+    
+
+
+  
+  KEY NOTES: 
+
+  1.LOADING A RECIPE BASED ON THE HASHCHANGE EVENT OF THE WINDOW OBJECT
+
+      - window.location : the entire URL 
+      - 'hash' : the url path  starting with the # 
+      - GOURD CLAUSE ON NO HASH(EMPTY HASH ): 
+             IF THERE IS NOTHING AFTER THE # IN URL then the entire hash is empty- AND NO RECIPE ID HAS THE EMPTY STRING VALUE IN DB!
+             IN THIS CASE :I WILL GET INFINITE SPINNER WITH THE MESSAGE SOMETHING WENT WRONG
+             => ADD GOURD CLAUSE - OK
+             
+      - Simulate a user recipe selection by adding a hardcoded link in the search-results HTML 
+      - Add event listener on the hashChanged
+      - Read the hash values from the url : window.location.hash
+        (instead of loading the same recipe )
+      - if no hash in the URL (the URL has # but nothig after- return!)
+      - Remove the '#' when there: window.location.slice(1); 
+      
+
+
+  2.LOADING A RECIPE BASED ON THE PAGE LOAD EVENT:
+     IMPORTANT!: 
+        I NEED TO LISTEN TO THIS EVENT SINCE HASHCHANGED EVENT IS NOT ENOUGH ! 
+        WHEN USER COPY THE URL TO ANOTHER BROWSER TAB PAGE!
+        THE NEW PAGE WITH THE COPIED URL IN THE ADDRESS BAR - WILL NOT HAVE ANY RECIPE!!
+
+      - Listen to the 'load' event
+
+
+
+
+
+
+    NOW: HANDLING THE 2 EVENTS BY RENDERING THE RECIPE 
+        - load : page loads with the recipe id in the hash 
+        - hashchanged
+
+O
+KEY NOTES: 
+
+

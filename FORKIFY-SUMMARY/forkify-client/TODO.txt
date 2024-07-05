@@ -1,0 +1,30 @@
+
+
+
+1. API: 
+    
+    1.1 Implement Limited fields : 
+       
+        EACH RECIPE IN THE SEARCH RESULTS(A PREVIEW OF RECIPE) SHOULD HAVE LIMITED AMOUT OF DATA:
+        
+            {
+                "publisher": "Closet Cooking",
+                "image_url": "http://forkify-api.herokuapp.com/images/Thai2BChicken2BPizza2Bwith2BSweet2BChili2BSauce2B5002B435581bcf578.jpg",
+                "title": "Thai Chicken Pizza with Sweet Chili Sauce",
+                "id": "5ed6604591c37cdc054bcae5"
+            }
+
+     
+     
+     1.2 add images to my API
+
+
+
+
+
+
+2.OPTIONAL: MY CLIENT MODEL: TRY LATER TO MAKE IT CLEAN! (the loadRecipe function modify the model state)
+
+
+
+

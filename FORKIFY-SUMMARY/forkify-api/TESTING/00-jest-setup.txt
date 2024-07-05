@@ -1,0 +1,228 @@
+
+
+
+TASK LIST: 
+
+    - npm install --save-dev jest supertest
+
+    - For testing controllers: 
+         npm install --save-dev node-mocks-http
+  
+  
+    -  "scripts": {
+             "start": "nodemon server.js", 
+             "test":"jest"
+    
+        },
+
+
+   -  npm jest => ERROR: 
+
+          FAIL  tests/controllers/recipeController.spec.js
+          ● Test suite failed to run
+
+            Jest encountered an unexpected token
+
+            Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
+
+            Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+            By default "node_modules" folder is ignored by transformers.
+
+            Here's what you can do:
+            • If you are trying to use ECMAScript Modules, see https://jestjs.io/docs/ecmascript-modules for how to enable it.
+            • If you are trying to use TypeScript, see https://jestjs.io/docs/getting-started#using-typescript
+            • To have some of your "node_modules" files transformed, you can specify a custom "transformIgnorePatterns" in your config.
+            • If you need a custom transformation specify a "transform" option in your config.
+            • If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the "moduleNameMapper" config option.
+
+            You'll find more details and examples of these config options in the docs:
+            https://jestjs.io/docs/configuration
+            For information about custom transformations, see:
+            https://jestjs.io/docs/code-transformation
+
+        
+**********************************************
+    Step-by-Step Solution (AFTER GETTING THE ERROR) 
+    CONFIGURE JEST WITH BABEL!!!
+**************************************
+
+
+    1. Install Babel
+            First, ensure you have Babel installed along with the necessary presets for Jest:
+            npm install --save-dev @babel/core @babel/preset-env @babel/preset-react @babel/preset-typescript babel-jest
+
+
+    2. Create a Babel Configuration
+        
+        Create a .babelrc file in the root of your project with the following content:
+
+
+                {
+                "presets": ["@babel/preset-env"]
+                }
+
+
+3. Configure Jest
+
+    Make sure Jest uses Babel to transpile your code. You can configure this in your package.json:
+
+
+            {
+            "scripts": {
+                "test": "jest"
+            },
+            "jest": {
+                "transform": {
+                "^.+\\.js$": "babel-jest"
+                }
+            }
+}
+
+
+-Alternatively, you can create a jest.config.js file in the root of your project with the following content:
+    DONT USE THIS - I USED ONLY THE ABOVVE .babel.rc
+
+
+module.exports = {
+  transform: {
+    '^.+\\.js$': 'babel-jest',
+  },
+};
+
+
+Example Project Structure
+Your project structure should look something like this:
+
+
+    my-project/
+    ├── controllers/
+    │   └── recipeController.js
+    ├── routes/
+    │   └── recipeRoutes.js
+    ├── tests/
+    │   └── recipeController.test.js
+    ├── utils/
+    │   └── appError.js
+    ├── app.js
+    ├── server.js
+    ├── .babelrc
+    ├── jest.config.js (if not using package.json for Jest configuration)
+    ├── package.json
+
+
+OK - STOP!!
+
+
+
+
+
+
+
+
+
+
+-------------------------
+OK!!
+///////////////////  
+Full Example Files
+For clarity, here are the full example files based on the steps above:
+
+.babelrc
+json
+Copy code
+{
+  "presets": ["@babel/preset-env"]
+}
+jest.config.js (if not using package.json for Jest configuration)
+javascript
+Copy code
+module.exports = {
+  transform: {
+    '^.+\\.js$': 'babel-jest',
+  },
+};
+Test File
+javascript
+Copy code
+// tests/recipeController.test.js
+const request = require('supertest');
+const app = require('../app');
+
+describe('Recipe Controller', () => {
+  it('should return custom error for /api/v1/recipes', async () => {
+    const res = await request(app).get('/api/v1/recipes');
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.status).toBe('fail');
+    expect(res.body.message).toBe('This is a custom error message.');
+  });
+});
+Controller File
+javascript
+Copy code
+// controllers/recipeController.js
+const AppError = require('../utils/appError');
+
+exports.getAllRecipes = (req, res, next) => {
+  try {
+    // Simulate an error
+    throw new AppError('This is a custom error message.', 400);
+  } catch (err) {
+    next(err);
+  }
+};
+Router File
+javascript
+Copy code
+// routes/recipeRoutes.js
+const express = require('express');
+const recipeController = require('../controllers/recipeController');
+
+const router = express.Router();
+
+router.route('/').get(recipeController.getAllRecipes);
+
+module.exports = router;
+App File
+javascript
+Copy code
+// app.js
+const express = require('express');
+const recipeRoutes = require('./routes/recipeRoutes');
+const AppError = require('./utils/appError');
+
+const app = express();
+
+app.use('/api/v1/recipes', recipeRoutes);
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
+
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  });
+});
+
+module.exports = app;
+Server File
+javascript
+Copy code
+// server.js
+const app = require('./app');
+
+const port = 3000;
+app.listen(port, () => {
+  console.log(`App running on port ${port}...`);
+});
+With this setup, Jest should be able to parse and run your tests correctly.
+
+
+
+
+
+
+
