@@ -1,11 +1,36 @@
-import { API_BASE_URL, API_PUBLIC_URL } from "./config.js";
+//POLYFILLING:
+import "core-js/stable"; //FOR EVERY THING OTHER THAN ASYNC - AWAIT
+import "regenerator-runtime/runtime"; //FOR POLYFILING ASYNC - AWAIT
+
+import { API_BASE_URL } from "./config.js";
 import icons from "url:../../public/img/icons.svg";
 
 const recipeContainer = document.querySelector(".recipe");
-console.log(icons);
-const loadRecipe = async (id) => {
+
+const renderSpinner = (parentEl) => {
+  const markup = ` 
+        <div class="spinner">
+          <svg>
+            <use href="${icons}#icon-loader"></use>
+          </svg>
+        </div> `;
+
+  //CLEAR PREVIOUS MARKUP
+  parentEl.innerHTML = "";
+  parentEl.insertAdjacentHTML("afterbegin", markup);
+};
+
+const renderRecipe = async (id) => {
   try {
-    //1.LOAD THE RECIPE FROM API
+    //EXTRACT THE ID FROM THE HASH IN THE URL (#2323233)
+    //const id = window.location.hash.split("#")[1];
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+
+    //1) RENDER LOADING SPINNER
+    renderSpinner(recipeContainer);
+
+    //2.LOAD THE RECIPE FROM API
     const response = await fetch(`${API_BASE_URL}recipes/${id}`);
 
     const data = await response.json();
@@ -26,15 +51,10 @@ const loadRecipe = async (id) => {
       ingredients: recipe.ingredients,
     };
 
-    //OK
-    console.log(recipe);
-
     ///2)RENDERING RECIPE
     recipeContainer.innerHTML = "";
     const markup = ` <figure class="recipe__fig">
-    <img src=${API_PUBLIC_URL}img/recipes/${recipe.imageUrl} alt=${
-      recipe.title
-    } class="recipe__img" />
+    <img src=${recipe.imageUrl} alt="${recipe.title}" class="recipe__img" />
           <h1 class="recipe__title">
             <span>${recipe.title}</span>
           </h1>
@@ -131,6 +151,7 @@ const loadRecipe = async (id) => {
 
     //USE INSERT ADJACENT HTML
     // recipeContainer.innerHTML = `${markup}`;
+    recipeContainer.innerHTML = "";
     recipeContainer.insertAdjacentHTML("afterbegin", markup);
 
     //recipeContainer.innerHTML = html;
@@ -139,10 +160,13 @@ const loadRecipe = async (id) => {
   }
 };
 
-//GREAT ! THIS IS THE RECIPE I CREATED
-//loadRecipe("6687c31267110382989d3c8f");
+//WORKS!!
+// renderRecipe("668a727a108bd157116126f3");
 
-//THIS ID BELONGS TO A RECIPE THAT I HAVE UPLOADED TO THE SERVER WITH AN IMAGE
-//loadRecipe("668922452bd5798062a0bd28");
-// loadRecipe("668926be2bd5798062a0bd71");
-loadRecipe("668a3a63c822d0b3d6ea0dd8");
+//E.L
+window.addEventListener("hashchange", renderRecipe);
+window.addEventListener("load", renderRecipe);
+
+["hashchange", "load"].forEach((event) =>
+  window.addEventListener(event, renderRecipe)
+);
