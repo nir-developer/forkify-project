@@ -43,16 +43,29 @@ const recipeSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    image_url: {
+    // image_url: {
+    //   type: String,
+    //   default: "default.jpg",
+    // },
+    /**
+     * I WANT TO ACCEPT THE name = image - FROM DATA in the request 
+     * - AND STORE THIS VALUE IN THE image field of the document 
+     *THEN - I WANT TO  SEND IT BACK IN THE RESPONSE BY RENAME IT TO image_url 
+      and set value to the URL for the client to load!! 
+      
+     */
+    image: {
       type: String,
+      default: "default.jpg",
     },
+
     servings: {
       type: Number,
-      required: [true, "Recipe must have a value of number of servings"],
+      //required: [true, "Recipe must have a value of number of servings"],
     },
     cooking_time: {
       type: Number,
-      required: [true, "Recipe must have a value of cooking time"],
+      //required: [true, "Recipe must have a value of cooking time"],
     },
     ingredients: [ingredientSchema], // Use the ingredientSchema for ingredients
   },
@@ -64,6 +77,8 @@ recipeSchema.set("toJSON", {
   transform: (doc, ret, options) => {
     ret.id = ret._id; // Replace _id with id
     delete ret._id; // Remove _id field from the response
+    ret.image_url = ret.image; //Replace image with image_id
+    delete ret.image; //Remove the image from the response
     delete ret.__v; // Optionally remove __v field if not needed
     return ret;
   },

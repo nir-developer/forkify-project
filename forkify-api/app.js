@@ -23,6 +23,9 @@ app.use(bodyParser.json());
 //CORS
 app.use(cors());
 
+//EXPOSE A FOLDER WITH STATIC RESOURCES
+app.use("/public", express.static(path.join(__dirname, "public")));
+
 //END POINTS
 app.use("/api/v1/recipes", recipeRouter);
 
