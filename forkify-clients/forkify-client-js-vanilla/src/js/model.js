@@ -1,17 +1,18 @@
 import { API_BASE_URL } from "./config";
+import { getJSON } from "../../helpers";
 export const state = {
   recipe: {},
 };
 
 export const loadRecipe = async (id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}recipes/${id}`);
+    // const response = await fetch(`${API_BASE_URL}recipes/${id}`);
+    // const data = await response.json();
+    // if (!response.ok) throw data;
+    const data = await getJSON(`${API_BASE_URL}recipes/${id}`);
 
-    const data = await response.json();
-
-    //data in this case from my api: {status: , message:}
-    if (!response.ok) throw data;
-
+    console.log("IN MODEL - THE DATA from getJSON");
+    console.log(data);
     let { recipe } = data.data;
 
     //CONVERT API FIELDS
