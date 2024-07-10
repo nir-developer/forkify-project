@@ -11,8 +11,6 @@ export const loadRecipe = async (id) => {
     // if (!response.ok) throw data;
     const data = await getJSON(`${API_BASE_URL}recipes/${id}`);
 
-    console.log("IN MODEL - THE DATA from getJSON");
-    console.log(data);
     let { recipe } = data.data;
 
     //CONVERT API FIELDS
