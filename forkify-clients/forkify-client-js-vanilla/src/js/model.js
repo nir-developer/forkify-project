@@ -28,10 +28,9 @@ export const loadRecipe = async (id) => {
     ///UPDATE THE STATE
     state.recipe = recipe;
   } catch (err) {
-    console.error(`MODEL ERROR CATCHED! ${err.message}(${err.status})`);
-    console.log("MODEL: err");
-    console.log(err);
-    //RE-THROW!! OTHERWISE WILL NOT PROPAPAGE TO CONTROLLER - SINCE "HANDLED"
+    console.error(`${err} *** (MODEL)`);
+    //RE-THROW!! TO MARK THIS PROMISE AS REJECTED -TO PROPAPAGE TO THE CONTROLLER
+    //OTHERWISE WILL NOT PROPAGATE TO CONTROLLER - SINCE "HANDLED"
     throw err;
     // throw new Error(err.message);
   }

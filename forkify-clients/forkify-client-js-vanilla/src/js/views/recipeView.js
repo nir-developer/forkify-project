@@ -1,13 +1,15 @@
 import icons from "url:../../../public/img/icons.svg";
 import { Fraction } from "fractional";
+import { mark } from "regenerator-runtime";
 
 const recipeContainer = document.querySelector(".recipe");
 
 class RecipeView {
   _data = null;
-  _parentEl = document.querySelector(".recipe");
+  _parentElement = document.querySelector(".recipe");
+  //DEFAULT ERROR MESSGE -INTRINSTIC TO THE VIEW - THE VIEW SHOULD KNOW BY DEFAULT WHAT TO RENDER!(unless controler pass a message param)
   _errorMessage = "We could not find your recipe. Please try another one!";
-  _message = ``;
+  _message = `Start by searching for a recipe or an ingredient. Have fun!`;
 
   //PUBLISHER FUNCTION:
   //EXECUTED IN TOP LEVEL - LISTEN TO THE 'LOAD' AND 'HASHCHANGED' EVENTS - AND PUBLISH THEM TO THE SUBSCRIBER CB FUNCTION BY CALLING IT!
@@ -19,19 +21,60 @@ class RecipeView {
     handler();
   }
 
-  renderSpinner = () => {
+  f() {
+    alert("XXX");
+  }
+  renderSpinner() {
     const markup = `
-          <div class="spinner">
+        <div class="spinner">
+          <svg>
+            <use href="${icons}#icon-loader"></use>
+          </svg>
+        </div> `;
+
+    this._clear();
+    //AT RUN TIME - this will have the specific _parentElement which is not a class field on this base class!
+    this._parentElement.insertAdjacentHTML("afterbegin", markup);
+  }
+
+  //AT RUN TIME - this will have the specific _errorMessage which is not a class field on this base class!
+  renderError(message = this._errorMessage) {
+    console.error("IN THE RENDER ERRROR VIEW");
+    // this._clear();
+    const markup = `
+          <div class="error">
+            <div>
+
+              <svg>
+                <use href="${icons}#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+          </div>
+    `;
+    this._clear();
+    //AT RUN TIME - this will have the specific _parentElement which is not a class field on this base class!
+    this._parentElement.insertAdjacentHTML("afterbegin", markup);
+  }
+
+  //FOR SUCCESS MESSAGE(LATER ..)
+  renderMessage(message = this._message) {
+    console.log("INSIDE renderMessgae");
+    const markup = ` 
+        <div class="message">
+          <div>
             <svg>
-              <use href="${icons}#icon-loader"></use>
+              <use href="${icons}#icon-smile"></use>
             </svg>
-          </div> `;
+          </div>
+          <p>${message}</p>
+        </div>
+     
+    `;
 
-    //CLEAR PREVIOUS MARKUP
-    this._parentEl.innerHTML = "";
-    this._parentEl.insertAdjacentHTML("afterbegin", markup);
-  };
-
+    this._clear();
+    this._parentElement.insertAdjacentHTML("afterbegin", markup);
+  }
   render(data) {
     //INITIAL THE DATA property
     this._data = data;
@@ -41,11 +84,11 @@ class RecipeView {
     const markup = this._generateMarkup();
 
     //APPEND THE MARKUP WITH THE CURRENT DATA TO THE PARENT CONTAINER
-    this._parentEl.insertAdjacentHTML("afterbegin", markup);
+    this._parentElement.insertAdjacentHTML("afterbegin", markup);
   }
 
   _clear() {
-    this._parentEl.innerHTML = "";
+    this._parentElement.innerHTML = "";
   }
 
   _generateMarkup() {
@@ -151,6 +194,8 @@ class RecipeView {
       })
       .join("")}`;
   }
+
+  //renderError(errorMessage = this._errorMessage) {}
 }
 
 //EXPORT DEFAULT
