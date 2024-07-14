@@ -2,13 +2,14 @@ import { API_BASE_URL } from "./config";
 import { getJSON } from "../../helpers";
 export const state = {
   recipe: {},
+  search: {
+    query: "",
+    results: [],
+  },
 };
 
 export const loadRecipe = async (id) => {
   try {
-    // const response = await fetch(`${API_BASE_URL}recipes/${id}`);
-    // const data = await response.json();
-    // if (!response.ok) throw data;
     const data = await getJSON(`${API_BASE_URL}recipes/${id}`);
 
     let { recipe } = data.data;
@@ -32,6 +33,37 @@ export const loadRecipe = async (id) => {
     //RE-THROW!! TO MARK THIS PROMISE AS REJECTED -TO PROPAPAGE TO THE CONTROLLER
     //OTHERWISE WILL NOT PROPAGATE TO CONTROLLER - SINCE "HANDLED"
     throw err;
-    // throw new Error(err.message);
   }
 };
+
+//http://localhost:3000/api/v1/recipes?search="PizzA"
+export const loadSearchResults = async (query) => {
+  try {
+    //update the query state- for analatyics
+    state.query = query;
+
+    const data = await getJSON(`${API_BASE_URL}recipes?search=${query}`);
+
+    if (data.status === "fail") throw data;
+
+    if (data.results === 0)
+      throw new Error(`No recipe found for ${query}, please try another one`);
+    console.log(data);
+    const { recipes } = data.data;
+
+    console.log(recipes);
+
+    //update the searchResults state
+    state.search.results = recipes;
+
+    console.log(
+      "Model inside loadSearchResults: Update state after success fetched : "
+    );
+    // console.log(state);
+  } catch (err) {
+    console.error(`Model loadSearchResults error: ${err.message}`);
+  }
+};
+
+//TEST - API PERFECT!!
+// loadSearchResults("PizZa");

@@ -1,5 +1,7 @@
 import * as model from "./model.js";
 import recipeView from "./views/recipeView.js";
+//THE SEARCH FORM
+import searchView from "./views/searchView.js";
 //POLYFILLING:
 import "core-js/stable"; //FOR EVERY THING OTHER THAN ASYNC - AWAIT
 import "regenerator-runtime/runtime"; //FOR POLYFILING ASYNC - AWAIT
@@ -34,8 +36,32 @@ const controlRecipes = async () => {
   }
 };
 
+const controlSearchResults = async (query) => {
+  try {
+    //1) Get search query from the search form (and clean the form right after)
+    const query = searchView.getQuery();
+
+    //GOURD CLAUSE HERE(MORE CLEAN THAN IN THE VIEW)
+    if (query === "") return;
+
+    // console.log("CONTROLLER - SHOULD  NOT GET HERE IF QUERY EMPTY STRING!");
+
+    await model.loadSearchResults(query);
+
+    const recipes = model.state.search.results;
+
+    console.log("CONTROLLER - RECIPES FROM MODEL FOR THE QUERY:", query);
+    console.log(recipes);
+  } catch (err) {
+    console.error("CONTROLLER - FAILED TO SEARCH RECIPES!");
+  }
+};
+
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
+  searchView.addHandlerSubmit(controlSearchResults);
 };
 
 init();
+
+controlSearchResults("PizzA");
