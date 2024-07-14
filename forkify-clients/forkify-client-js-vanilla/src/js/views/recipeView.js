@@ -1,11 +1,14 @@
+import View from "./View.js";
 import icons from "url:../../../public/img/icons.svg";
 import { Fraction } from "fractional";
 import { mark } from "regenerator-runtime";
 
-const recipeContainer = document.querySelector(".recipe");
+// const recipeContainer = document.querySelector(".recipe");
 
-class RecipeView {
-  _data = null;
+//INHERIT EVERYTHING FROM THE VIEW PARENT (except _generateMarkup, and addHandlerRender)
+class RecipeView extends View {
+  //PARCEL AND BABLEL - INHERITANCE DOES NOT WORK WITH PRIVATE CLASS FIELDS -> SET TO PROJTECTED (_)
+  // _data = null;
   _parentElement = document.querySelector(".recipe");
   //DEFAULT ERROR MESSGE -INTRINSTIC TO THE VIEW - THE VIEW SHOULD KNOW BY DEFAULT WHAT TO RENDER!(unless controler pass a message param)
   _errorMessage = "We could not find your recipe. Please try another one!";
@@ -21,9 +24,6 @@ class RecipeView {
     handler();
   }
 
-  f() {
-    alert("XXX");
-  }
   renderSpinner() {
     const markup = `
         <div class="spinner">
@@ -93,7 +93,7 @@ class RecipeView {
 
   _generateMarkup() {
     const recipe = this._data;
-    return ` <figure class="recipe__fig">
+    return `<figure class="recipe__fig">
         <img src=${recipe.imageUrl} alt="${recipe.title}" class="recipe__img" />
               <h1 class="recipe__title">
                 <span>${recipe.title}</span>
@@ -132,9 +132,7 @@ class RecipeView {
               </div>
 
               <div class="recipe__user-generated">
-                <svg>
-                 <use href="${icons}#icon-user"></use>
-                </svg>
+                
               </div>
               <button class="btn--round">
                 <svg class=""><use href="${icons}#icon-"></use> <use href="${icons}#icon-bookmark-fill"></use>

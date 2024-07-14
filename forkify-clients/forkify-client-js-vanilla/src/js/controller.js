@@ -2,12 +2,18 @@ import * as model from "./model.js";
 import recipeView from "./views/recipeView.js";
 //THE SEARCH FORM
 import searchView from "./views/searchView.js";
+import resultsView from "./views/resultsView.js";
 //POLYFILLING:
 import "core-js/stable"; //FOR EVERY THING OTHER THAN ASYNC - AWAIT
 import "regenerator-runtime/runtime"; //FOR POLYFILING ASYNC - AWAIT
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//PARCEL - HOT RELOAD REPLACEMENT - FOR KEEPING THE SEARCH RESULTS WHEN MODIFYING THE CODE  AND CLICKING SAVE!
+if (module.hot) module.hot.accept();
+//!!!!!!!!!!!!!!!!!!11
 const controlRecipes = async () => {
   try {
+    console.log("TRY!!!!");
     //EXTRACT THE ID FROM THE HASH IN THE URL (#2323233)
     //const id = window.location.hash.split("#")[1];
     const id = window.location.hash.slice(1);
@@ -38,6 +44,10 @@ const controlRecipes = async () => {
 
 const controlSearchResults = async (query) => {
   try {
+    //0) RENDER THE SPINNER(implementation inherited from View!)
+    resultsView.renderSpinner();
+    console.log(resultsView);
+
     //1) Get search query from the search form (and clean the form right after)
     const query = searchView.getQuery();
 
@@ -48,10 +58,12 @@ const controlSearchResults = async (query) => {
 
     await model.loadSearchResults(query);
 
-    const recipes = model.state.search.results;
+    //RENDER RESULTS (PREVIEWS)
+    //resultsView.render(model.state.search.results);
+    // console.log("controlSearchResults - model.state.search.results = ");
+    // console.log(model.state.search.results);
 
-    console.log("CONTROLLER - RECIPES FROM MODEL FOR THE QUERY:", query);
-    console.log(recipes);
+    resultsView.render(model.state.search.results);
   } catch (err) {
     console.error("CONTROLLER - FAILED TO SEARCH RECIPES!");
   }

@@ -48,13 +48,31 @@ export const loadSearchResults = async (query) => {
 
     if (data.results === 0)
       throw new Error(`No recipe found for ${query}, please try another one`);
-    console.log(data);
-    const { recipes } = data.data;
 
-    console.log(recipes);
+    // const { recipes } = data.data;
+
+    //2.RENAME API's PROPERTIES NAMES
+    const recipes = data.data.recipes.map((rec) => {
+      return {
+        publisher: rec.publisher,
+        imageUrl: rec.image_url,
+        title: rec.title,
+        id: rec.id,
+      };
+    });
+
+    //UPDATE THE STATE!
+    // state.search.results = recipes;
+    state.search.results = recipes;
+
+    console.log("MODEL- AFTER CONVERTING PREVIEWS FROM API TO CLIENT NAMING: ");
+    console.log(state.search.results);
+
+    // console.log("MODEL - RECIPES:");
+    // console.log(recipes);
 
     //update the searchResults state
-    state.search.results = recipes;
+    // state.search.results = recipes;
 
     console.log(
       "Model inside loadSearchResults: Update state after success fetched : "
