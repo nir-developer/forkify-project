@@ -43,17 +43,7 @@ const recipeSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    // image_url: {
-    //   type: String,
-    //   default: "default.jpg",
-    // },
-    /**
-     * I WANT TO ACCEPT THE name = image - FROM DATA in the request 
-     * - AND STORE THIS VALUE IN THE image field of the document 
-     *THEN - I WANT TO  SEND IT BACK IN THE RESPONSE BY RENAME IT TO image_url 
-      and set value to the URL for the client to load!! 
-      
-     */
+
     image: {
       type: String,
       default: "default.jpg",
@@ -73,6 +63,9 @@ const recipeSchema = new mongoose.Schema(
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
+//CREATE A TEXT INDEX TO  MY MONGOOSE SHEMA DEFINITION - so I WILL BE ABLE TO USE THE $text MONGODB OPERATOR IN THE FIND QUERY
+recipeSchema.index({ title: "text" });
+
 recipeSchema.set("toJSON", {
   transform: (doc, ret, options) => {
     ret.id = ret._id; // Replace _id with id
@@ -91,8 +84,7 @@ recipeSchema.set("toJSON", {
 //     return ret;
 //   },
 // });
-//CREATE A TEXT INDEX TO  MY MONGOOSE SHEMA DEFINITION - so I WILL BE ABLE TO USE THE $text MONGODB OPERATOR IN THE FIND QUERY
-recipeSchema.index({ title: "text" });
+
 const Recipe = new mongoose.model("recipe", recipeSchema);
 
 module.exports = Recipe;

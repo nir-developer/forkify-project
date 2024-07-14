@@ -74,9 +74,22 @@ exports.getAllRecipesByKeyWord = async (req, res) => {
     const words = searchTerm.match(/\b(\w+)\b/g); // Extract whole words from the search term
     const regexPattern = words.map((word) => `\\b${word}\\b`).join("|"); // Create a regex pattern for whole words
 
-    const recipes = await Recipe.find({
+    let recipes = await Recipe.find({
       title: { $regex: regexPattern, $options: "i" },
-    });
+    })
+      //PROJECT
+      .select("publisher image title id");
+
+    //PROJECTION - CREATE recipePreviews
+    //CREATE PREVIEWS - PROJECTIONS
+    recipes = recipes.map((recipe) => ({
+      publisher: recipe.publisher,
+      image_url: recipe.image,
+      title: recipe.title,
+      //NOTE - I TRANSFORM THE _id to id with setter in the Model
+      id: recipe.id,
+      //id: recipe._id,
+    }));
 
     return res.status(200).json({
       status: "success",
@@ -172,17 +185,6 @@ exports.uploadRecipe = async (req, res, next) => {
 
       image: req.file ? filePath : "default.jpg",
     };
-
-    // console.log(recipe.image_url);
-    // console.log(recipe)
-
-    // //ADD THENAME THE IMAGE AS THE
-    // let image_url;
-    // if (req.file) image_url = req.file.filename;
-
-    //recipe-1720262505090.jpeg - OK !!
-    //console.log(image_url);
-
     recipe = await Recipe.create(recipe);
 
     console.log("SUCCESS CREATED RECIPE!!");
@@ -200,3 +202,12 @@ exports.uploadRecipe = async (req, res, next) => {
     res.status(500).json({ status: 500, message: err.message });
   }
 };
+
+//GET ALL RECIPE - BY KEY WORD
+// exports.getAllRecipes = async (req, res, next) => {
+//   try {
+//     const query = req.query.search;
+//     console.log(query);
+//     res.status(200).json("OK");
+//   } catch (err) {}
+// };
