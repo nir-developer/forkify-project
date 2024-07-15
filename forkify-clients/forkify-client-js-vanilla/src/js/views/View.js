@@ -2,7 +2,6 @@ import icons from "url:../../../public/img/icons.svg";
 
 //"ABSTRACT CLASS - should not be created never!"
 export default class View {
-  //PRIVATE METHODS - COMMON IMPLEMENTATIONS
   _data = null;
 
   render(data) {
@@ -16,6 +15,8 @@ export default class View {
 
     this._clear();
     const markup = this._generateMarkup();
+
+    // console.log(markup);
 
     //APPEND THE MARKUP WITH THE CURRENT DATA TO THE PARENT CONTAINER
     this._parentElement.insertAdjacentHTML("afterbegin", markup);
@@ -55,6 +56,7 @@ export default class View {
     this._parentElement.insertAdjacentHTML("afterbegin", markup);
   }
 
+  //PRIVATE METHODS - COMMON IMPLEMENTATIONS
   _clear() {
     this._parentElement.innerHTML = "";
   }

@@ -1,8 +1,10 @@
 import * as model from "./model.js";
+//VIEWS
 import recipeView from "./views/recipeView.js";
-//THE SEARCH FORM
 import searchView from "./views/searchView.js";
 import resultsView from "./views/resultsView.js";
+import paginationView from "./views/paginationView.js";
+
 //POLYFILLING:
 import "core-js/stable"; //FOR EVERY THING OTHER THAN ASYNC - AWAIT
 import "regenerator-runtime/runtime"; //FOR POLYFILING ASYNC - AWAIT
@@ -59,8 +61,11 @@ const controlSearchResults = async (query) => {
 
     await model.loadSearchResults(query);
 
-    resultsView.render(model.getSearchResultsPage());
+    //BY DEFAULT PAGE = 1
+    resultsView.render(model.getSearchResultsPage(2));
 
+    //4) RENDER INITIAL PAGINATION BUTTONS
+    paginationView.render(model.state.search);
     //NO ASYNC - since the recipes are in the client already
     //resultsView.render(model.getSearchResultsPage(page));
   } catch (err) {
@@ -68,9 +73,28 @@ const controlSearchResults = async (query) => {
   }
 };
 
+//NOT ASYNC FUNCTION!!!
+//HANLDER OF THE PAGINATION BUTTONS CLICK EVENTS - RECIEVES THE PAGE NUMBER(UPDATED FROM THE UI)
+//TAKES PARAM!! THE PAGE FROM THE UI RETURNED BACK FROM THE PAGIANTION VIEW FROM DATA-SET
+//AND FETCH THE DATA IN THIS PAGE!
+//THE PAGE STATE HAS UPDATED ALREADY (OR HAS A DEFAULT OF 1) - MODEL HAS ALREAY
+//NO ASYNC!!!! THE RESULTS ARE ALREADY FETCHED - ONCE! IN THE controlSearchReults1
+const controlPagination = (goToPage) => {
+  //0) NO!!! NO RE LOAD THE RESULTS AGAIN!!! THEY ALREADY LOADED BEOFRELOAD - ALL- RESULTS FOR THE GIVEN PAGE
+  // await model.loadSearchResults();
+
+  //1) RENDER - NEW - RESULTS
+  resultsView.render(model.getSearchResultsPage(goToPage));
+
+  //RENDER - NEW - PAGINATION BUTTONS
+  paginationView.render(model.state.search);
+};
+
+//NOTE: the controls
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
   searchView.addHandlerSubmit(controlSearchResults);
+  paginationView.addHandlerClick(controlPagination);
 };
 
 init();

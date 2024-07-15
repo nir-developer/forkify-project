@@ -204,12 +204,21 @@ exports.uploadRecipe = async (req, res, next) => {
 };
 
 ///////////////////////////////////
-//ADMIN
+//ADMIN - IMPLEMENT PAGINATION , SEARCH ,
 exports.getAllRecipes = async (req, res, next) => {
   try {
-    const recipes = await Recipe.find();
+    //NOT ASYNC - THIS IS A
+    const query = Recipe.find();
 
-    console.log(recipes);
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit;
+    const skip = (page - 1) * limit;
+
+    //const recipes = await Recipe.find();
+    const recipes = await Recipe.find();
+    // console.log("inside getAllRecipes - the query:");
+    // console.log(query);
+    // console.log(recipes);
 
     res.status(200).json({
       status: "success",
@@ -220,11 +229,80 @@ exports.getAllRecipes = async (req, res, next) => {
     res.status(500).json({ status: "fail", message: error.message });
   }
 };
-//GET ALL RECIPE - BY KEY WORD
-// exports.getAllRecipes = async (req, res, next) => {
-//   try {
-//     const query = req.query.search;
-//     console.log(query);
-//     res.status(200).json("OK");
-//   } catch (err) {}
-// };
+
+/**API FEATURES
+ * 
+ * Create the query first 
+ * const features = new APIFeatures(Model.find(filter), req.query)
+        .filter()
+        .sort()
+        .paginate();
+       
+
+       //The query contains all the chain I build above - now execute the query:  
+        const docs = await features.query;
+        
+ * then execute it async
+ * paginate()
+    {
+      
+       const page = this.queryString.page * 1 || 1 
+       const limit = this.queryString.limit * 1 || 100
+       const skip = (page - 1)  * limit; 
+
+       this.query = this.query.skip(skip).limit(limit);
+  
+       return this;
+
+      
+     //DONT NEED ALL THE BELOW CODE!! SINCE I DONT NEED TO THROW AN ERROR WHEN NO RESULTS!! client understand that [] ...
+       //COMPUTE THE SKIP VALUE - NUMBER OF DOCUMENTS TO BE SKIP
+       //const skip = (page - 1) * limit;
+        //    if(this.queryString.page)
+        //    {
+        //      const numberOfTours = await Tour.countDocuments(); 
+
+        //     if(numberOfTours < skip) throw new Error(`This page does not exist`)
+
+        //    }
+      
+      
+       //TEST THE REQUEST FOR ONE PAGE WITH 3 RESULTS - OK!
+
+    }
+    
+ * ------------------------------------
+ * exports.getAll = Model => catchAsync(async (req,res,next)=>
+{
+   
+    //HACK!(the filter object logic - is extracted to this method from the previous getAllReviews !)
+    let filter = {}
+    if(req.params.tourId)  filter.tour = req.params.tourId;
+    
+ 
+    //EXECUTE QUERY
+    const features = new APIFeatures(Model.find(filter), req.query)
+        .filter()
+        .sort()
+        .paginate();
+       
+
+       //The query contains all the chain I build above - now execute the query:  
+        const docs = await features.query;
+        
+        
+        //EXPLAIN METHOD: TEST PERFORMANCE OF THE INDEX -  WITH EXPLAIN METHOD
+        //const docs = await features.query.explain("executionStats");
+    
+        //SEND RESPONSE
+        res.status(200).json({
+            status:'success', 
+            results: docs.length, 
+            data:{
+                data:docs
+            }
+        })
+    
+}
+
+ */
