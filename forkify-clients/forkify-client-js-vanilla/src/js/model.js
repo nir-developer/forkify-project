@@ -1,10 +1,13 @@
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL, RES_PER_PAGE } from "./config";
 import { getJSON } from "../../helpers";
 export const state = {
   recipe: {},
   search: {
     query: "",
     results: [],
+    resultsPerPage: RES_PER_PAGE, //For the computation
+    //THE CURRENT PAGE IS A STATE! SINCE IT IS UPDATED ON THE UI
+    page: 1,
   },
 };
 
@@ -68,12 +71,6 @@ export const loadSearchResults = async (query) => {
     console.log("MODEL- AFTER CONVERTING PREVIEWS FROM API TO CLIENT NAMING: ");
     console.log(state.search.results);
 
-    // console.log("MODEL - RECIPES:");
-    // console.log(recipes);
-
-    //update the searchResults state
-    // state.search.results = recipes;
-
     console.log(
       "Model inside loadSearchResults: Update state after success fetched : "
     );
@@ -81,6 +78,19 @@ export const loadSearchResults = async (query) => {
   } catch (err) {
     console.error(`Model loadSearchResults error: ${err.message}`);
   }
+};
+
+//page = 1,2,,,,
+//slice(0,10) //extract the 10!)
+export const getSearchResultsPage = function (page = state.search.page) {
+  const start = (page - 1) * RES_PER_PAGE;
+  const end = page * RES_PER_PAGE;
+
+  // console.log(`start = ${start}, end = ${end}`);
+
+  // const results = state.search.results.slice(start, end);
+  // console.log(results);
+  return state.search.results.slice(start, end);
 };
 
 //TEST - API PERFECT!!

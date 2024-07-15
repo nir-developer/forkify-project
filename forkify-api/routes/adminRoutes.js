@@ -7,14 +7,6 @@ const express = require("express");
 
 const router = express.Router();
 
-router.route("/").get(recipeController.getAllRecipesByKeyWord).post(
-  //upload.single("image_url"),
-  recipeController.uploadUserPhoto,
-  recipeController.uploadRecipe
-);
-
-router.route("/:id").get(recipeController.getRecipe);
-
 //ADMIN ROUTES
-router.route("/").get(recipeController.getAllRecipes);
+router.route("/recipes").get(recipeController.getAllRecipes);
 module.exports = router;

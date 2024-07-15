@@ -9,7 +9,8 @@ import "regenerator-runtime/runtime"; //FOR POLYFILING ASYNC - AWAIT
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //PARCEL - HOT RELOAD REPLACEMENT - FOR KEEPING THE SEARCH RESULTS WHEN MODIFYING THE CODE  AND CLICKING SAVE!
-if (module.hot) module.hot.accept();
+//TURN OFF IT DOES PROLEMS(AND IT DOES WHEN SENDING DIFFERENT PAGES FOR SEARCH RESULTS!!)
+// if (module.hot) module.hot.accept();
 //!!!!!!!!!!!!!!!!!!11
 const controlRecipes = async () => {
   try {
@@ -58,12 +59,10 @@ const controlSearchResults = async (query) => {
 
     await model.loadSearchResults(query);
 
-    //RENDER RESULTS (PREVIEWS)
-    //resultsView.render(model.state.search.results);
-    // console.log("controlSearchResults - model.state.search.results = ");
-    // console.log(model.state.search.results);
+    resultsView.render(model.getSearchResultsPage());
 
-    resultsView.render(model.state.search.results);
+    //NO ASYNC - since the recipes are in the client already
+    //resultsView.render(model.getSearchResultsPage(page));
   } catch (err) {
     console.error("CONTROLLER - FAILED TO SEARCH RECIPES!");
   }
@@ -75,5 +74,3 @@ const init = function () {
 };
 
 init();
-
-controlSearchResults("PizzA");

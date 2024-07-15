@@ -1,7 +1,7 @@
 const globalErrorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
 const recipeRouter = require("./routes/recipeRoutes");
-
+const adminRouter = require("./routes/adminRoutes");
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
@@ -29,6 +29,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 //END POINTS
 app.use("/api/v1/recipes", recipeRouter);
 
+app.use("/api/v1/admin/", adminRouter);
 app.all("*", (req, res, next) => {
   next(
     new AppError(

@@ -203,6 +203,23 @@ exports.uploadRecipe = async (req, res, next) => {
   }
 };
 
+///////////////////////////////////
+//ADMIN
+exports.getAllRecipes = async (req, res, next) => {
+  try {
+    const recipes = await Recipe.find();
+
+    console.log(recipes);
+
+    res.status(200).json({
+      status: "success",
+      results: recipes.length,
+      data: { recipes },
+    });
+  } catch (error) {
+    res.status(500).json({ status: "fail", message: error.message });
+  }
+};
 //GET ALL RECIPE - BY KEY WORD
 // exports.getAllRecipes = async (req, res, next) => {
 //   try {
