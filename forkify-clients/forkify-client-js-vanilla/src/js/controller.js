@@ -16,7 +16,6 @@ import "regenerator-runtime/runtime"; //FOR POLYFILING ASYNC - AWAIT
 //!!!!!!!!!!!!!!!!!!11
 const controlRecipes = async () => {
   try {
-    console.log("TRY!!!!");
     //EXTRACT THE ID FROM THE HASH IN THE URL (#2323233)
     //const id = window.location.hash.split("#")[1];
     const id = window.location.hash.slice(1);
@@ -30,18 +29,14 @@ const controlRecipes = async () => {
     await model.loadRecipe(id);
 
     //3)GET RECIPE FROM MODEL AND RENDER IT IN THE VIEW
-    recipeView.render(model.state.recipe);
-  } catch (err) {
-    //HANDLE ERROR BY RENDERING THE MESSAGE ON THE UI!!
-    //console.log(`CONTROLLER - ${err}`);
-    //IF CALLING WITHOUT ERR THE INJECTED ERR - THEN THE VIEW WILL RENDER IT'S OWN DEFAULT ERROR
-    //INJECT A MEANINGFUL MESSAGE - NOT THE ORIGINAL ONE FROM (err)
-    // recipeView.renderError(err);
-    recipeView.renderError();
 
-    // console.error(
-    //   `CONTROLLER ERROR CATCHED! ${err.message}(${err.statusCode})`
-    // );
+    console.log(model.state.recipe.servings);
+    recipeView.render(model.state.recipe);
+
+    //TEST - ONLY MODEL AND CONTROLLER -( BEFORE IMPLEMENTING VIEW LOGIC WITH THE UPDATE SERVINGS )
+    //controlServings(40);
+  } catch (err) {
+    recipeView.renderError();
   }
 };
 
@@ -62,7 +57,7 @@ const controlSearchResults = async (query) => {
     await model.loadSearchResults(query);
 
     //BY DEFAULT PAGE = 1
-    resultsView.render(model.getSearchResultsPage(2));
+    resultsView.render(model.getSearchResultsPage());
 
     //4) RENDER INITIAL PAGINATION BUTTONS
     paginationView.render(model.state.search);
@@ -90,11 +85,29 @@ const controlPagination = (goToPage) => {
   paginationView.render(model.state.search);
 };
 
+//DOM ALGORITHM - LATER!??????
+//FOR NOW I REPLACE THE COMPLETE RECIPE VIEW - UNTIL NEXT LEXTURE WITH THE DOM ALOGORITHM
+//=> Call the recipeView.render(model.state.recipe) - as before - from the controlServings
+const controlServings = (newServings) => {
+  //1) UPDATE SERVINGS AND QUANTITIES
+  model.updateServings(newServings);
+
+  //2) RENDER - ENTIRE - RECIPE VIEW - LATER OPTIMIZE
+  recipeView.render(model.state.recipe);
+
+  //1)Update the recipe servings(state)
+  //2) Update the View(RecipeView)
+};
 //NOTE: the controls
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
+  recipeView.addHandlerUpdateServings(controlServings);
   searchView.addHandlerSubmit(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
+
+  //WRONG - ERROR!! SINCE NO RECIPE HAS ARRIVED FROM API YET!
+  //INSTEAD  - CALL THIS CONTROLLER FOR TESTING - AT THE END OF THE controlRecipes()!!
+  //controlServings(30);
 };
 
 init();

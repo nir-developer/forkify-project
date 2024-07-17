@@ -94,5 +94,55 @@ export const getSearchResultsPage = function (page = state.search.page) {
   return state.search.results.slice(start, end);
 };
 
+// const getNewQuantity = (oldQuantity, oldServings, newServings) =>
+//   (oldQuantity * newServings) / oldServings;
+
+//newQuantity = (quantity * newServings) / servings
+export const updateServings = (newServings) => {
+  //1.Update the servings state to newServings
+  //console.log(`model: before update: ${state.recipe.servings}`);
+
+  // state.recipe.servings = newServings;
+
+  console.log(`model: statue before update servings and quantities:`);
+  console.log(state.recipe);
+  // const oldServings = state.recipe.servings;
+
+  //JONAS
+  //SIDE EFFECT! MUTATE THE ARRAY - TRY BELOW IMMUTABLE
+  state.recipe.ingredients.forEach((ing) => {
+    ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
+  });
+
+  state.recipe.servings = newServings;
+};
+
+// const getNewQuantity = (oldQuantity, oldServings, newServings) =>
+//   (oldQuantity * newServings) / oldServings;
+
+// updateServings(10);
 //TEST - API PERFECT!!
 // loadSearchResults("PizZa");
+
+// state.recipe.ingredients.forEach((ing) => {
+//   ing.quantity = getNewQuantity(
+//     ing.quantity,
+//     state.recipe.servings,
+//     newServings
+//   );
+
+//   state.recipe.servings = newServings;
+// });
+
+//IMMUTABLE!!!!!!!!!!!!!!!!!!!!!!
+//TRY TO IMPLEMENT WITH IMMUTABLE
+// const newIngredients = state.recipe.ingredients.map(
+//   ((ing) => ing.quantity * state.recipe.servings) / newServings
+// );
+
+// console.log(newIngredients);
+// state.recipe = {
+//   ...state.recipe,
+//   ingredients: newIngredients,
+//   servings: newServings,
+// };

@@ -24,75 +24,42 @@ class RecipeView extends View {
     handler();
   }
 
-  renderSpinner() {
-    const markup = `
-        <div class="spinner">
-          <svg>
-            <use href="${icons}#icon-loader"></use>
-          </svg>
-        </div> `;
+  //SECOND SUBSCRIBER
+  /**EVENT DELEGATION - IMPORTANT!!!!
+   PARENT ELEMENT(the button): btn--tiny 
+   *must use the e to figure out which button is the target element of the click)
+   
+  for the matching strategy 
+  
+  
+  //DESTRUCTRING DOES NOT WORK IN THIS CASE -
+      //THE PROBLEM : SINCE + converts the btn.dataset and then try to access to updateTo
+      //const updateTo = +btn.dataset.updateTo;
+ */
+  addHandlerUpdateServings(handler) {
+    this._parentElement.addEventListener("click", function (e) {
+      //SELECT THE COMMON CLASS OF THE 2 BUTTONS(BUBBLE UP THE EVENT FROM THE SVG , SPAN CHILDREN)
+      //better to select class btn--update-servings, than btn--tiny
+      const btn = e.target.closest(".btn--update-servings");
 
-    this._clear();
-    //AT RUN TIME - this will have the specific _parentElement which is not a class field on this base class!
-    this._parentElement.insertAdjacentHTML("afterbegin", markup);
-  }
+      //GOURD : PREVENT THE NULL RETURN - IF ANY OTHER ELEMENT WAS CLICKED DURING THE BUBBLE(in the recipeContainer)
+      if (!btn) return;
+      //
 
-  //AT RUN TIME - this will have the specific _errorMessage which is not a class field on this base class!
-  renderError(message = this._errorMessage) {
-    console.error("IN THE RENDER ERRROR VIEW");
-    // this._clear();
-    const markup = `
-          <div class="error">
-            <div>
+      //SOLUTION - PERFORM THE CONVERSION FROM THE STRING - NOT FROM THE OBJECT :btn.dataset!!
+      const { updateTo } = btn.dataset;
+      if (+updateTo > 0) handler(+updateTo);
 
-              <svg>
-                <use href="${icons}#icon-alert-triangle"></use>
-              </svg>
-            </div>
-            <p>${message}</p>
-          </div>
-    `;
-    this._clear();
-    //AT RUN TIME - this will have the specific _parentElement which is not a class field on this base class!
-    this._parentElement.insertAdjacentHTML("afterbegin", markup);
-  }
-
-  //FOR SUCCESS MESSAGE(LATER ..)
-  renderMessage(message = this._message) {
-    console.log("INSIDE renderMessgae");
-    const markup = ` 
-        <div class="message">
-          <div>
-            <svg>
-              <use href="${icons}#icon-smile"></use>
-            </svg>
-          </div>
-          <p>${message}</p>
-        </div>
-     
-    `;
-
-    this._clear();
-    this._parentElement.insertAdjacentHTML("afterbegin", markup);
-  }
-  render(data) {
-    //INITIAL THE DATA property
-    this._data = data;
-
-    //CLEAR THE PARENT CONTAINER
-    this._clear();
-    const markup = this._generateMarkup();
-
-    //APPEND THE MARKUP WITH THE CURRENT DATA TO THE PARENT CONTAINER
-    this._parentElement.insertAdjacentHTML("afterbegin", markup);
-  }
-
-  _clear() {
-    this._parentElement.innerHTML = "";
+      //TEST WITH HARDCODING VALUE(LATER READ THE VALUES FROM THE BUTTONS DATA-SETS!!)
+      // console.log(handler(50));
+    });
   }
 
   _generateMarkup() {
     const recipe = this._data;
+
+    console.log("INSIDE _generateMakrup of RecipeView - the current Recipe:");
+    console.log(recipe);
     return `<figure class="recipe__fig">
         <img src=${recipe.imageUrl} alt="${recipe.title}" class="recipe__img" />
               <h1 class="recipe__title">
@@ -105,8 +72,10 @@ class RecipeView extends View {
                 <svg class="recipe__info-icon">
                   <use href="${icons}#icon-clock"></use>
                 </svg>
-                <span class="recipe__info-data recipe__info-data--minutes">45</span>
-                <span class="recipe__info-text">${recipe.cookingTime}</span>
+                <span class="recipe__info-data recipe__info-data--minutes">${
+                  recipe.cookingTime
+                }</span>
+                <span class="recipe__info-text">Minutes</span>
               </div>
               <div class="recipe__info">
               <svg class="recipe__info-icon">
@@ -118,12 +87,16 @@ class RecipeView extends View {
                 <span class="recipe__info-text">servings</span>
 
                 <div class="recipe__info-buttons">
-                  <button class="btn--tiny btn--increase-servings">
+                  <button class="btn--tiny btn--update-servings" data-update-to=${
+                    recipe.servings - 1
+                  }>
                     <svg>
                       <use href="${icons}#icon-minus-circle"></use>
                     </svg>
                   </button>
-                  <button class="btn--tiny btn--increase-servings">
+                  <button class="btn--tiny btn--update-servings" data-update-to=${
+                    recipe.servings + 1
+                  }>
                     <svg>
                      <use href="${icons}#icon-plus-circle"></use>
                     </svg>
