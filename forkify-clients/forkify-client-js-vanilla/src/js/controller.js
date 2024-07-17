@@ -25,12 +25,20 @@ const controlRecipes = async () => {
     //1) RENDER LOADING SPINNER
     recipeView.renderSpinner();
 
+    //IMPORTANT!! THIS 0) IS IMPLEMETNED AFTER THE UPDATE DOM ALOGORITHM
+    //0) UPDATE THE RESULTS VIEW TO MARK THE SELECTED SEARCH
+    //PASS THE CURRENT PAGE!!!!
+    //WRONG
+    //resultsView.render(model.getSearchResultsPage());
+    resultsView.update(model.getSearchResultsPage());
+
     //2.LOAD THE RECIPE FROM API(USING THE MODEL) - MAY THROW (REJECTION PROMISE)
     await model.loadRecipe(id);
 
     //3)GET RECIPE FROM MODEL AND RENDER IT IN THE VIEW
 
-    console.log(model.state.recipe.servings);
+    // console.log(model.state.recipe.servings);
+    //recipeView.update(model.state.recipe);
     recipeView.render(model.state.recipe);
 
     //TEST - ONLY MODEL AND CONTROLLER -( BEFORE IMPLEMENTING VIEW LOGIC WITH THE UPDATE SERVINGS )
@@ -44,7 +52,7 @@ const controlSearchResults = async (query) => {
   try {
     //0) RENDER THE SPINNER(implementation inherited from View!)
     resultsView.renderSpinner();
-    console.log(resultsView);
+    // console.log(resultsView);
 
     //1) Get search query from the search form (and clean the form right after)
     const query = searchView.getQuery();
@@ -93,7 +101,10 @@ const controlServings = (newServings) => {
   model.updateServings(newServings);
 
   //2) RENDER - ENTIRE - RECIPE VIEW - LATER OPTIMIZE
-  recipeView.render(model.state.recipe);
+  //recipeView.render(model.state.recipe);
+
+  //UPDATE(only text and element attributes)
+  recipeView.update(model.state.recipe);
 
   //1)Update the recipe servings(state)
   //2) Update the View(RecipeView)

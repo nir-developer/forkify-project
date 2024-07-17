@@ -1,4 +1,6 @@
-export const API_BASE_URL = "http://localhost:3000/api/v1/";
+//https://forkify-api.herokuapp.com/api/v2/recipes?search=pizza
+//export const API_BASE_URL = "http://localhost:3000/api/v1/";
+export const API_BASE_URL = "https://forkify-api.herokuapp.com/api/v2/";
 
 export const API_PUBLIC_URL = "http://localhost:3000/public/";
 

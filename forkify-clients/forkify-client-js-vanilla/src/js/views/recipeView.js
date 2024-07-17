@@ -58,8 +58,8 @@ class RecipeView extends View {
   _generateMarkup() {
     const recipe = this._data;
 
-    console.log("INSIDE _generateMakrup of RecipeView - the current Recipe:");
-    console.log(recipe);
+    // console.log("INSIDE _generateMakrup of RecipeView - the current Recipe:");
+    // console.log(recipe);
     return `<figure class="recipe__fig">
         <img src=${recipe.imageUrl} alt="${recipe.title}" class="recipe__img" />
               <h1 class="recipe__title">

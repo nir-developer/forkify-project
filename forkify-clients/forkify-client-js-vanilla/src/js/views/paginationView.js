@@ -32,10 +32,10 @@ class PaginationView extends View {
 
     const numPages = Math.ceil(numResults / resultsPerPage);
 
-    console.log(`paginationView, 
-    currentPage = ${currentPage}, 
-    numPages = ${numPages}, 
-    numResults = ${numResults}`);
+    // console.log(`paginationView,
+    // currentPage = ${currentPage},
+    // numPages = ${numPages},
+    // numResults = ${numResults}`);
 
     //Page 1, and there are other pages
     if (currentPage === 1 && numPages > 1)

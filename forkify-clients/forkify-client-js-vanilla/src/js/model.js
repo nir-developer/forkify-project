@@ -65,15 +65,16 @@ export const loadSearchResults = async (query) => {
     });
 
     //UPDATE THE STATE!
-    // state.search.results = recipes;
+    //IMPORTANT:MUST RESET THE PAGE TO 1 1!!(ALSO THE CURRENT PAGE!! SINCE OTHERWISE FOR NEW SEARCH - THE PREVIOUS PAGE WILL BE PRESERVED)
     state.search.results = recipes;
+    state.search.page = 1;
 
-    console.log("MODEL- AFTER CONVERTING PREVIEWS FROM API TO CLIENT NAMING: ");
-    console.log(state.search.results);
+    // console.log("MODEL- AFTER CONVERTING PREVIEWS FROM API TO CLIENT NAMING: ");
+    // console.log(state.search.results);
 
-    console.log(
-      "Model inside loadSearchResults: Update state after success fetched : "
-    );
+    // console.log(
+    //   "Model inside loadSearchResults: Update state after success fetched : "
+    // );
     // console.log(state);
   } catch (err) {
     console.error(`Model loadSearchResults error: ${err.message}`);
@@ -104,8 +105,8 @@ export const updateServings = (newServings) => {
 
   // state.recipe.servings = newServings;
 
-  console.log(`model: statue before update servings and quantities:`);
-  console.log(state.recipe);
+  // console.log(`model: statue before update servings and quantities:`);
+  // console.log(state.recipe);
   // const oldServings = state.recipe.servings;
 
   //JONAS

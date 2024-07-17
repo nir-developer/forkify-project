@@ -23,6 +23,66 @@ export default class View {
 
     // this._generateMarkup();
   }
+
+  update(data) {
+    ///REMOVE THIS  -SINCE IT WILL RENDER AN ERROR ON THE RESULTS VIEW!
+    //IF THERE WAS NO SEARCH BEFORE !
+    // if (!data || (Array.isArray(data) && data.length === 0))
+    //   return this.renderError();
+
+    this._data = data;
+
+    const newMarkup = this._generateMarkup();
+
+    const newDOM = document.createRange().createContextualFragment(newMarkup);
+
+    //VDT (DOM TREE REPRESENTATION (not actual) generated after the update!)
+    const newElements = Array.from(newDOM.querySelectorAll("*"));
+
+    //Current elements on the actual page(on theUI - before the update!)
+    const curElements = Array.from(this._parentElement.querySelectorAll("*"));
+
+    //ARRAY OF  110 NODES! - THIS IS THE DOM THAT WOULD BE RENDERED ON THE PAGE - IF USING THE RENDER()
+    console.log(curElements);
+    console.log(newElements);
+
+    //COMPARE THE ACTUAL DOM ELEMENTS  ON THE UI WITH THE VDT IN MEMORY DOM TREE
+    newElements.forEach((newEl, i) => {
+      const curEl = curElements[i];
+
+      console.log(curEl, curEl.isEqualNode(newEl));
+
+      //1)UPDATES CHANGED TEXT!!!!
+      //COMPARE  THE 2 NODES - UPDATE THE CURRENT NODE(ON THE DOM) ONLY IF
+      //THE 2 NODES ARE DIFFERENT(SUB TREES) - AND ONLY IF THE DIRECT CHILD OF THE NEW DOM IS NOT TEXT
+      //OPTIONAL CHAINING ON THE CHILD - SINCE NOT EXIST ALWAYS!
+      //MUST TRIM()!!!!
+      if (
+        !newEl.isEqualNode(curEl) &&
+        newEl.firstChild?.nodeValue.trim() !== ""
+      ) {
+        //IMPORTANT
+        console.log("***", newEl.firstChild?.nodeValue.trim());
+        curEl.textContent = newEl.textContent;
+      }
+
+      //2)UPDATE CHANGED ATTRIBUTES(the data-set attribute : update-to)
+
+      if (!newEl.isEqualNode(curEl)) {
+        //LOG THE OBJECT OFF  ALL ATTRIBUTES PROPERTIES THAT HAVE BEEN CHANGED
+        console.log(newEl.attributes);
+        //CONVERT THE OBJECT newEl.attributes into Array
+        console.log(Array.from(newEl.attributes));
+
+        //SUPER IMPORTANT: LOOP OVER THE ARRAY OF ALL ATTRIBUTES OF THE NEW ELEMENT - AND UPDATE THEIR VALUE TO THE NEW ELEMNET
+        //REPLACING ALL ATTRIBUTES VALUES OF THE CURRENT ELEMENT ON THE DOM BY THE ATTRIBUTE OF HTE NEW VDT
+        Array.from(newEl.attributes).forEach((attr) =>
+          curEl.setAttribute(attr.name, attr.value)
+        );
+      }
+    });
+  }
+
   renderSpinner() {
     const markup = `
         <div class="spinner">
