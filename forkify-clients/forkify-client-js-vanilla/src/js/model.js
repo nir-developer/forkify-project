@@ -9,8 +9,16 @@ export const state = {
     //THE CURRENT PAGE IS A STATE! SINCE IT IS UPDATED ON THE UI
     page: 1,
   },
+  bookmarks: [],
 };
 
+/**SUPER IMPORTANT -BOOKMARK:
+ *  AFTER FETCHING THE RECIPE
+ *    CHECK IF IT'S ID WAS PRESENT IN THE BOOKMARKS
+ *      IF IT IS - THEN SET THE LOADED RECIPE AS BOOKMARKED!
+ *
+ *     OTHERWISE - THE BOOKMAKRED STATE WILL NOT BE PRESERVED
+ */
 export const loadRecipe = async (id) => {
   try {
     const data = await getJSON(`${API_BASE_URL}recipes/${id}`);
@@ -18,7 +26,7 @@ export const loadRecipe = async (id) => {
     let { recipe } = data.data;
 
     //CONVERT API FIELDS
-    recipe = {
+    state.recipe = {
       id: recipe.id,
       title: recipe.title,
       publisher: recipe.publisher,
@@ -29,8 +37,12 @@ export const loadRecipe = async (id) => {
       ingredients: recipe.ingredients,
     };
 
+    if (state.bookmarks.some((bookmark) => bookmark.id === id))
+      state.recipe.bookmarked = true;
+    else state.recipe.bookmarked = false;
     ///UPDATE THE STATE
-    state.recipe = recipe;
+
+    // state.recipe = recipe;
   } catch (err) {
     console.error(`${err} *** (MODEL)`);
     //RE-THROW!! TO MARK THIS PROMISE AS REJECTED -TO PROPAPAGE TO THE CONTROLLER
@@ -45,6 +57,7 @@ export const loadSearchResults = async (query) => {
     //update the query state- for analatyics
     state.query = query;
 
+    //USE POPCORN - DONT SENT API REQUESTS FOR QUERY < 3
     const data = await getJSON(`${API_BASE_URL}recipes?search=${query}`);
 
     if (data.status === "fail") throw data;
@@ -116,6 +129,46 @@ export const updateServings = (newServings) => {
   });
 
   state.recipe.servings = newServings;
+};
+
+/**BOOKMARKS FUNCTIONALITY :
+ * -  Bookmark vs unbookmkarked :
+ *
+ *     ADD Bookmark : takes a recipe object a recipe is "bookmarked recipe "  iff  recipe id === state.recipe.id
+ *      PATTERN - FOR ADDING TAKES AN OBJECT
+ *
+ *      Unbookmark: takes an id(simpler)
+ *        USE MUTABLE for now : slice
+ *        LATER - TRY WITH IMMUTABLE - WITH FILTER- for the filter to update the bookmakrs - filter out
+ *
+ *
+ *
+ *
+ */
+export const addBookmark = (recipe) => {
+  //ADD BOOKMARK
+  state.bookmarks.push(recipe);
+
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+
+  //WRONG!!!!  HE ADDED THE BOOKMARK WITHOUT CONDITION
+  //UPDATE STATE IF NEEDED
+  // if (state.recipe.id === recipe.id) {
+  //   state.bookmarks.push(recipe);
+  //   state.recipe.bookmarked = true;
+  // }
+};
+
+export const deleteBookmark = (id) => {
+  //NOT CLEAN FOR NOW(using splice!!)
+  const index = state.bookmarks.findIndex((bookmark) => bookmark.id === id);
+  state.bookmarks.splice(index, 1);
+
+  //MARK THE CURRENT RECIPE AS NOT BOOKMAKRED ANYMORE(since user clicks the bookmark button on it's view to unbookmark)
+  if (id === state.recipe.id) state.recipe.bookmarked = false;
+
+  // state.bookmarks.filter((bookmark) => bookmark.id !== recipe.id);
+  // state.recipe.bookmarked = false;
 };
 
 // const getNewQuantity = (oldQuantity, oldServings, newServings) =>

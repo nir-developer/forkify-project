@@ -109,10 +109,34 @@ const controlServings = (newServings) => {
   //1)Update the recipe servings(state)
   //2) Update the View(RecipeView)
 };
+
+//TRIGGER WHEN BOOKMARK ICON IS CLICKED
+/**
+ * IMPORTANT - CATCH HIS BUG!!
+ *   if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
+      if (model.state.recipe.bookmarked) model.deleteBookmark(model.state.recipe.id);
+
+    THE PROBLEM - WHEN NOT BOOKMARK - IT UPDATES THE RECIPE TO BE BOOKMAKRED 
+    AND IN THE SECOND IF - IT IS ALREADY BOOKMAKRED- SO IT IS UNBOOKMARKED IT AGAIN!
+
+ * 
+ */
+const controlAddBookmark = () => {
+  //BOOKMARK THE  CURRENT RECIPE STATE AS BOOKMARK - ONLY IF IT IS NOT BOOKMAKRED NOW
+  if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
+  else model.deleteBookmark(model.state.recipe.id);
+  // if (model.state.recipe.bookmarked)
+  //   model.deleteBookmark(model.state.recipe.id);
+
+  //UPDATE THE VIEW(only the bookmark button!)
+  recipeView.update(model.state.recipe);
+};
+
 //NOTE: the controls
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
+  recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSubmit(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
 

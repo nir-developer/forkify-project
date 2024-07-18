@@ -43,14 +43,14 @@ export default class View {
     const curElements = Array.from(this._parentElement.querySelectorAll("*"));
 
     //ARRAY OF  110 NODES! - THIS IS THE DOM THAT WOULD BE RENDERED ON THE PAGE - IF USING THE RENDER()
-    console.log(curElements);
-    console.log(newElements);
+    // console.log(curElements);
+    // console.log(newElements);
 
     //COMPARE THE ACTUAL DOM ELEMENTS  ON THE UI WITH THE VDT IN MEMORY DOM TREE
     newElements.forEach((newEl, i) => {
       const curEl = curElements[i];
 
-      console.log(curEl, curEl.isEqualNode(newEl));
+      //console.log(curEl, curEl.isEqualNode(newEl));
 
       //1)UPDATES CHANGED TEXT!!!!
       //COMPARE  THE 2 NODES - UPDATE THE CURRENT NODE(ON THE DOM) ONLY IF
@@ -62,7 +62,7 @@ export default class View {
         newEl.firstChild?.nodeValue.trim() !== ""
       ) {
         //IMPORTANT
-        console.log("***", newEl.firstChild?.nodeValue.trim());
+        // console.log("***", newEl.firstChild?.nodeValue.trim());
         curEl.textContent = newEl.textContent;
       }
 
@@ -70,9 +70,9 @@ export default class View {
 
       if (!newEl.isEqualNode(curEl)) {
         //LOG THE OBJECT OFF  ALL ATTRIBUTES PROPERTIES THAT HAVE BEEN CHANGED
-        console.log(newEl.attributes);
+        //console.log(newEl.attributes);
         //CONVERT THE OBJECT newEl.attributes into Array
-        console.log(Array.from(newEl.attributes));
+        //console.log(Array.from(newEl.attributes));
 
         //SUPER IMPORTANT: LOOP OVER THE ARRAY OF ALL ATTRIBUTES OF THE NEW ELEMENT - AND UPDATE THEIR VALUE TO THE NEW ELEMNET
         //REPLACING ALL ATTRIBUTES VALUES OF THE CURRENT ELEMENT ON THE DOM BY THE ATTRIBUTE OF HTE NEW VDT
