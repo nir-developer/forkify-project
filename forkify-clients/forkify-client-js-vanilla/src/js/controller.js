@@ -4,8 +4,12 @@ import recipeView from "./views/recipeView.js";
 import searchView from "./views/searchView.js";
 import resultsView from "./views/resultsView.js";
 import paginationView from "./views/paginationView.js";
+<<<<<<< HEAD
 // import bookmarksView from "./views/bookmarksView.js";
 
+=======
+import bookmarksView from "./views/bookmarksView.js";
+>>>>>>> bookmarks
 //POLYFILLING:
 import "core-js/stable"; //FOR EVERY THING OTHER THAN ASYNC - AWAIT
 import "regenerator-runtime/runtime"; //FOR POLYFILING ASYNC - AWAIT
@@ -31,6 +35,8 @@ const controlRecipes = async () => {
     //WITH RENDER() - FLICKERING EFFECT !! BAD!!
     //resultsView.render(model.getSearchResultsPage());
     resultsView.update(model.getSearchResultsPage());
+    //TO MARK THE BOOKMARK PREVIEW - THE SAME WAY AS ABOVE WITH THE RESULT PREVIEW
+    bookmarksView.update(model.state.bookmarks);
 
     //IMPORTANT - VERY EASY TO INTEGRATE THE BOOKMARKS WITH THE HIGHLIGHTS DUE TO THE  WELL DESIGN ARCHITECTURE
     bookmarksView.update(model.state.bookmarks);
@@ -74,7 +80,7 @@ const controlSearchResults = async (query) => {
     //NO ASYNC - since the recipes are in the client already
     //resultsView.render(model.getSearchResultsPage(page));
   } catch (err) {
-    console.error("CONTROLLER - FAILED TO SEARCH RECIPES!");
+    console.error("CONTROLLER - FAILED TO SEARCH RECIPES!", err);
   }
 };
 
@@ -131,10 +137,16 @@ const controlAddBookmark = () => {
   if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
   else model.deleteBookmark(model.state.recipe.id);
 
+<<<<<<< HEAD
   //2) Update the RecipeView
   recipeView.update(model.state.recipe);
 
   //3)Render bookmarks
+=======
+  //UPDATE THE VIEW(only the bookmark button!) - THE RECIPE HAS ALREADY BEEN RENDERED!!!!
+  recipeView.update(model.state.recipe);
+  //RE-RENDER(NOT UPDATE!!!! SINCE? ) WHY RENDER???
+>>>>>>> bookmarks
   bookmarksView.render(model.state.bookmarks);
 };
 

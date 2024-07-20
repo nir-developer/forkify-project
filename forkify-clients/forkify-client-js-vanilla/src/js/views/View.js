@@ -1,3 +1,4 @@
+import { mark } from "regenerator-runtime";
 import icons from "url:../../../public/img/icons.svg";
 
 //"ABSTRACT CLASS - should not be created never!"
@@ -13,15 +14,11 @@ export default class View {
     this._data = data;
     // console.log("INSIDE RENDER OF SUBCLASS: ", this);
 
-    this._clear();
     const markup = this._generateMarkup();
-
-    //IMPORTANT - PREVENT RENDERING (FOR THE CASE THE render() of the PreviewView is called - I want to return markup right away)
+    //EARLY RETURN - render = false ! BUT RETURN REIGHT AWAY THE MARKUP
     if (!render) return markup;
 
-    // console.log(markup);
-
-    //ACTUAL RENDERING!
+    this._clear();
     //APPEND THE MARKUP WITH THE CURRENT DATA TO THE PARENT CONTAINER
     this._parentElement.insertAdjacentHTML("afterbegin", markup);
 
@@ -102,8 +99,7 @@ export default class View {
 
   //AT RUN TIME - this will have the specific _errorMessage which is not a class field on this base class!
   renderError(message = this._errorMessage) {
-    //console.error("IN THE RENDER ERRROR VIEW");
-
+    // console.error("IN THE RENDER ERRROR VIEW");
     // this._clear();
     const markup = `
           <div class="error">

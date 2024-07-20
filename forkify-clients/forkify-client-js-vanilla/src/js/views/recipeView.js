@@ -72,6 +72,7 @@ class RecipeView extends View {
     const recipe = this._data;
 
     console.log(recipe.bookmarked);
+    const id = window.location.hash.slice(1);
 
     // console.log("INSIDE _generateMakrup of RecipeView - the current Recipe:");
     // console.log(recipe);

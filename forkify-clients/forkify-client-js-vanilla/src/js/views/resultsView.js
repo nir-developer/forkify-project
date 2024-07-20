@@ -1,16 +1,33 @@
 import icons from "url:../../../public/img/icons.svg";
-
+import previewView from "./previewView";
 import View from "./View";
 class ResultsView extends View {
   _parentElement = document.querySelector(".results");
   _errorMessage = "No recipes found for your query!Please try again:)";
   _message = "";
 
+  /**
+   * IMPORTANT: SAME METHOD AS IN THE BookMarkView :
+   *  AFTER REFACTORING TO PreviewView  child view to render a preview
+   *  this in _generateMarkup of PreviewView refers each time to either Bookmark object or Recipe Preview object
+   *
+   */
+
   _generateMarkup() {
-    const markup = this._data.map(this._generatePreview).join("");
+    const markup = this._data
+      .map((result) => previewView.render(result, false))
+      .join("");
 
     return markup;
   }
+
+  /////////////////////////
+  //BEFORE REFFACTORING TO THE PreviewView class:
+  // _generateMarkup() {
+  //   const markup = this._data.map(this._generatePreview).join("");
+
+  //   return markup;
+  // }
 
   /**
    //SUPER IMPORTANT:
