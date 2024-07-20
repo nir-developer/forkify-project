@@ -4,6 +4,7 @@ import recipeView from "./views/recipeView.js";
 import searchView from "./views/searchView.js";
 import resultsView from "./views/resultsView.js";
 import paginationView from "./views/paginationView.js";
+// import bookmarksView from "./views/bookmarksView.js";
 
 //POLYFILLING:
 import "core-js/stable"; //FOR EVERY THING OTHER THAN ASYNC - AWAIT
@@ -25,13 +26,14 @@ const controlRecipes = async () => {
     //1) RENDER LOADING SPINNER
     recipeView.renderSpinner();
 
-    //IMPORTANT!! THIS 0) IS IMPLEMETNED AFTER THE UPDATE DOM ALOGORITHM
-    //0) UPDATE THE RESULTS VIEW TO MARK THE SELECTED SEARCH
-    //PASS THE CURRENT PAGE!!!!
-    //WRONG
+    //0) UPDATE THE RESULTS VIEW TO MARK THE SELECTED SEARCH - USE THE UPDATE DOM ALGORITHM:
+    //PASS THE CURRENT PAGE(NOT ASYNC OPERATION IN THE MODEL!! - only the loadSearchResults is async)
+    //WITH RENDER() - FLICKERING EFFECT !! BAD!!
     //resultsView.render(model.getSearchResultsPage());
     resultsView.update(model.getSearchResultsPage());
 
+    //IMPORTANT - VERY EASY TO INTEGRATE THE BOOKMARKS WITH THE HIGHLIGHTS DUE TO THE  WELL DESIGN ARCHITECTURE
+    bookmarksView.update(model.state.bookmarks);
     //2.LOAD THE RECIPE FROM API(USING THE MODEL) - MAY THROW (REJECTION PROMISE)
     await model.loadRecipe(id);
 
@@ -112,26 +114,31 @@ const controlServings = (newServings) => {
 
 //TRIGGER WHEN BOOKMARK ICON IS CLICKED
 /**
- * IMPORTANT - CATCH HIS BUG!!
- *   if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
+ * 1) IMPORTANT - CATCH HIS BUG!!
+ *    if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
       if (model.state.recipe.bookmarked) model.deleteBookmark(model.state.recipe.id);
 
-    THE PROBLEM - WHEN NOT BOOKMARK - IT UPDATES THE RECIPE TO BE BOOKMAKRED 
-    AND IN THE SECOND IF - IT IS ALREADY BOOKMAKRED- SO IT IS UNBOOKMARKED IT AGAIN!
+      THE PROBLEM - WHEN NOT BOOKMARK - IT UPDATES THE RECIPE TO BE BOOKMAKRED 
+      AND IN THE SECOND IF - IT IS ALREADY BOOKMAKRED- SO IT IS UNBOOKMARKED IT AGAIN!
+
+
+   2) 
 
  * 
  */
 const controlAddBookmark = () => {
-  //BOOKMARK THE  CURRENT RECIPE STATE AS BOOKMARK - ONLY IF IT IS NOT BOOKMAKRED NOW
+  //Add/Remove a bookmark
   if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
   else model.deleteBookmark(model.state.recipe.id);
-  // if (model.state.recipe.bookmarked)
-  //   model.deleteBookmark(model.state.recipe.id);
 
-  //UPDATE THE VIEW(only the bookmark button!)
+  //2) Update the RecipeView
   recipeView.update(model.state.recipe);
+
+  //3)Render bookmarks
+  bookmarksView.render(model.state.bookmarks);
 };
 
+//
 //NOTE: the controls
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
@@ -139,6 +146,7 @@ const init = function () {
   recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSubmit(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
+  //bookmarksView.addHandlerBookmarks(controlBookmarks);
 
   //WRONG - ERROR!! SINCE NO RECIPE HAS ARRIVED FROM API YET!
   //INSTEAD  - CALL THIS CONTROLLER FOR TESTING - AT THE END OF THE controlRecipes()!!

@@ -4,7 +4,7 @@ import icons from "url:../../../public/img/icons.svg";
 export default class View {
   _data = null;
 
-  render(data) {
+  render(data, render = true) {
     //GOURD CLAUSE - PREVENT UNDEFINED OBJECT(loadRecipe) AND EMPTY ARRAY(search results) IMPLEMENTED HERE SINCE COMMON TO ALL RENDERER VIEWS!
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
@@ -16,8 +16,12 @@ export default class View {
     this._clear();
     const markup = this._generateMarkup();
 
+    //IMPORTANT - PREVENT RENDERING (FOR THE CASE THE render() of the PreviewView is called - I want to return markup right away)
+    if (!render) return markup;
+
     // console.log(markup);
 
+    //ACTUAL RENDERING!
     //APPEND THE MARKUP WITH THE CURRENT DATA TO THE PARENT CONTAINER
     this._parentElement.insertAdjacentHTML("afterbegin", markup);
 
@@ -98,7 +102,8 @@ export default class View {
 
   //AT RUN TIME - this will have the specific _errorMessage which is not a class field on this base class!
   renderError(message = this._errorMessage) {
-    console.error("IN THE RENDER ERRROR VIEW");
+    //console.error("IN THE RENDER ERRROR VIEW");
+
     // this._clear();
     const markup = `
           <div class="error">
