@@ -1,10 +1,11 @@
+import { mark } from "regenerator-runtime";
 import icons from "url:../../../public/img/icons.svg";
 
 //"ABSTRACT CLASS - should not be created never!"
 export default class View {
   _data = null;
 
-  render(data) {
+  render(data, render = true) {
     //GOURD CLAUSE - PREVENT UNDEFINED OBJECT(loadRecipe) AND EMPTY ARRAY(search results) IMPLEMENTED HERE SINCE COMMON TO ALL RENDERER VIEWS!
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
@@ -13,11 +14,11 @@ export default class View {
     this._data = data;
     // console.log("INSIDE RENDER OF SUBCLASS: ", this);
 
-    this._clear();
     const markup = this._generateMarkup();
+    //EARLY RETURN - render = false ! BUT RETURN REIGHT AWAY THE MARKUP
+    if (!render) return markup;
 
-    // console.log(markup);
-
+    this._clear();
     //APPEND THE MARKUP WITH THE CURRENT DATA TO THE PARENT CONTAINER
     this._parentElement.insertAdjacentHTML("afterbegin", markup);
 
@@ -98,7 +99,7 @@ export default class View {
 
   //AT RUN TIME - this will have the specific _errorMessage which is not a class field on this base class!
   renderError(message = this._errorMessage) {
-    console.error("IN THE RENDER ERRROR VIEW");
+    // console.error("IN THE RENDER ERRROR VIEW");
     // this._clear();
     const markup = `
           <div class="error">
