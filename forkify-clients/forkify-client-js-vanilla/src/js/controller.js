@@ -4,12 +4,7 @@ import recipeView from "./views/recipeView.js";
 import searchView from "./views/searchView.js";
 import resultsView from "./views/resultsView.js";
 import paginationView from "./views/paginationView.js";
-<<<<<<< HEAD
-// import bookmarksView from "./views/bookmarksView.js";
-
-=======
 import bookmarksView from "./views/bookmarksView.js";
->>>>>>> bookmarks
 //POLYFILLING:
 import "core-js/stable"; //FOR EVERY THING OTHER THAN ASYNC - AWAIT
 import "regenerator-runtime/runtime"; //FOR POLYFILING ASYNC - AWAIT
@@ -137,16 +132,9 @@ const controlAddBookmark = () => {
   if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
   else model.deleteBookmark(model.state.recipe.id);
 
-<<<<<<< HEAD
-  //2) Update the RecipeView
-  recipeView.update(model.state.recipe);
-
-  //3)Render bookmarks
-=======
   //UPDATE THE VIEW(only the bookmark button!) - THE RECIPE HAS ALREADY BEEN RENDERED!!!!
   recipeView.update(model.state.recipe);
   //RE-RENDER(NOT UPDATE!!!! SINCE? ) WHY RENDER???
->>>>>>> bookmarks
   bookmarksView.render(model.state.bookmarks);
 };
 
