@@ -13,12 +13,12 @@ class PaginationView extends View {
       //   console.log(e.target);
       const btn = e.target.closest(".btn--inline");
       //PREVENT DELEGATION TO PARENTS OF THE BUTTONS!
-      console.log(btn);
+      // console.log(btn);
       if (!btn) return;
 
       const goToPage = +btn.dataset.goto;
-      console.log(typeof goToPage);
-      console.log(`inside addHandlerClick - goto = ${goToPage}`);
+      // console.log(typeof goToPage);
+      // console.log(`inside addHandlerClick - goto = ${goToPage}`);
 
       handler(goToPage);
     });

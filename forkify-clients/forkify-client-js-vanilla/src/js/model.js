@@ -37,6 +37,10 @@ export const loadRecipe = async (id) => {
       ingredients: recipe.ingredients,
     };
 
+    //Must check if the recipe was marked as bookmarked
+    // on a previous load of this recipe(if there was such) - Implemented in the addBookmark() method
+    //AND RE-MARKED THE CURRENT LOADED RECIPE!!
+
     if (state.bookmarks.some((bookmark) => bookmark.id === id))
       state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
@@ -145,11 +149,32 @@ export const updateServings = (newServings) => {
  *
  *
  */
+
+//PERSIST BOOKMARKS ARRAY STATE(BY FIRST STRINGIFY IT )
+const persistBookmark = function () {
+  localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
+};
+
+/**
+ * NOTES:
+ *  - The recipe should be added to the bookmarks state - anyway
+ * -  The recipe should be marked as bookmarked - ONLY IF THE recipe.id === state.recipe.id !
+ *        1.SINCE SO WHEN THE USER BOOKMARKS CURRENT RECIPE -
+ *        2.THEN USER  SELECT ANOTHER RECIPE
+ *        3.API FETCH NEW RECIPE AND THEN SELECT THE RECIPE HE ALREADY BOOKMARKED - THEN ITHEN THE API FETCH - AND  FOR A NEW RECIPE)
+ *        4. THEN USER SELECT THE PREVIOUS RECIPE(BOOKMARKED)
+ *        5. API FETCH THE PREVIOUS RECIPE - BUT WITHOUT MARKING IT ON THE PREVIOUS LOAD AS BOOKMARKED -
+ *                 IT WILL NOT BE MARKED ON THE UI AS BOOKMAKRED
+ *        6.Then when the loadRecipe() - updates the recipe state - it will set it as such!
+ *
+ */
 export const addBookmark = (recipe) => {
   //ADD BOOKMARK
   state.bookmarks.push(recipe);
 
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+
+  persistBookmark();
 
   //WRONG!!!!  HE ADDED THE BOOKMARK WITHOUT CONDITION
   //UPDATE STATE IF NEEDED
@@ -167,10 +192,42 @@ export const deleteBookmark = (id) => {
   //MARK THE CURRENT RECIPE AS NOT BOOKMAKRED ANYMORE(since user clicks the bookmark button on it's view to unbookmark)
   if (id === state.recipe.id) state.recipe.bookmarked = false;
 
+  persistBookmark();
+
+  //CHECK IF IT WORKS !!!!
   // state.bookmarks.filter((bookmark) => bookmark.id !== recipe.id);
   // state.recipe.bookmarked = false;
 };
 
+const init = function () {
+  const storage = localStorage.getItem("bookmarks");
+  if (storage) state.bookmarks = JSON.parse(storage);
+};
+init();
+
+//FOR DUBGGINGG - ONLY DURING DEVELOPMENT!
+const clearBookmarks = function () {
+  localStorage.clear("bookmarks");
+};
+
+//FOR DEVELOPMENT PURPOSE ONLY
+//clearBookmarks();
+
+//////////////////////////////////////////////
+//LATER IMMUTABLE
+// const init = function () {
+//   //DONT STORE DIRECTLRY - SINCE MIGHT BE UNDEFIFNED - AND I WANT [] BY DEFAULT IF NO BOOKMARKS IN L.S
+//   const storedBookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+
+//   console.log("INSIDE INIT - BOOKMARKS BEFORE READING ROM L.S");
+//   console.log(state.bookmarks);
+//   storedBookmarks ? (state.bookmarks = storedBookmarks) : [];
+
+//   console.log("INSIDE INIT - BOOKMARKS AFTER READING ROM L.S");
+//   console.log(state.bookmarks);
+// };
+
+// init();
 // const getNewQuantity = (oldQuantity, oldServings, newServings) =>
 //   (oldQuantity * newServings) / oldServings;
 

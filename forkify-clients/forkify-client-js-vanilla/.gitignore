@@ -1,0 +1,4 @@
+#CLIENT- Ignore Parcel cache directories
+.parcel-cache/
+.cache/
+dist/

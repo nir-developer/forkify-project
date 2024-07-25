@@ -23,30 +23,27 @@ const controlRecipes = async () => {
     if (!id) return;
 
     //1) RENDER LOADING SPINNER
-    recipeView.renderSpinner();
+    // recipeView.renderSpinner();
 
     //0) UPDATE THE RESULTS VIEW TO MARK THE SELECTED SEARCH - USE THE UPDATE DOM ALGORITHM:
-    //PASS THE CURRENT PAGE(NOT ASYNC OPERATION IN THE MODEL!! - only the loadSearchResults is async)
-    //WITH RENDER() - FLICKERING EFFECT !! BAD!!
-    //resultsView.render(model.getSearchResultsPage());
     resultsView.update(model.getSearchResultsPage());
+
     //TO MARK THE BOOKMARK PREVIEW - THE SAME WAY AS ABOVE WITH THE RESULT PREVIEW
+    //DEBUG THE INIT()
+    //debugger;
     bookmarksView.update(model.state.bookmarks);
 
-    //IMPORTANT - VERY EASY TO INTEGRATE THE BOOKMARKS WITH THE HIGHLIGHTS DUE TO THE  WELL DESIGN ARCHITECTURE
-    bookmarksView.update(model.state.bookmarks);
-    //2.LOAD THE RECIPE FROM API(USING THE MODEL) - MAY THROW (REJECTION PROMISE)
+    //1) Loading recipe
     await model.loadRecipe(id);
 
-    //3)GET RECIPE FROM MODEL AND RENDER IT IN THE VIEW
-
-    // console.log(model.state.recipe.servings);
-    //recipeView.update(model.state.recipe);
+    //2)Rendering recipe
     recipeView.render(model.state.recipe);
 
-    //TEST - ONLY MODEL AND CONTROLLER -( BEFORE IMPLEMENTING VIEW LOGIC WITH THE UPDATE SERVINGS )
-    //controlServings(40);
+    //3) Updating recipe
+    // bookmarksView.update(model.state.bookmarks);
   } catch (err) {
+    //DEBUG THE ERROR IN THE L.S BOOKMARKS LECTURE - WHEN THE RECIPE WAS NOT FOUND!!
+    console.error(err);
     recipeView.renderError();
   }
 };
@@ -132,22 +129,28 @@ const controlAddBookmark = () => {
   if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
   else model.deleteBookmark(model.state.recipe.id);
 
-  //UPDATE THE VIEW(only the bookmark button!) - THE RECIPE HAS ALREADY BEEN RENDERED!!!!
+  // 2) Update recipe view
   recipeView.update(model.state.recipe);
-  //RE-RENDER(NOT UPDATE!!!! SINCE? ) WHY RENDER???
+
+  // 3) Render bookmarks
   bookmarksView.render(model.state.bookmarks);
+  //(CHECK WHY DOES NOT WORK WITH UPDATE() INSTEAD OF RENDER
+  //bookmarksView.update(model.state.bookmarks);
 };
 
+//IMPORTANT - THIS HANDLER IS PART OF THE SOLUUTION TO THE BUG OF THE UPDATE VIEW METHOD
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
+};
 //
 //NOTE: the controls
 const init = function () {
+  bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
-  recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSubmit(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
-  //bookmarksView.addHandlerBookmarks(controlBookmarks);
-
+  recipeView.addHandlerAddBookmark(controlAddBookmark);
   //WRONG - ERROR!! SINCE NO RECIPE HAS ARRIVED FROM API YET!
   //INSTEAD  - CALL THIS CONTROLLER FOR TESTING - AT THE END OF THE controlRecipes()!!
   //controlServings(30);

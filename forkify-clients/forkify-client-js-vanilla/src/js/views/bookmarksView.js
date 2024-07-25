@@ -25,6 +25,21 @@ class BookmarksView extends View {
     return markup;
   }
 
+  /**SUPER IMPORTANT NOTES: 
+   * 
+   *    1) THIS METHOD WAS CREATE AS  THE SOLUTION FOR THE BUG ON THE UPDATE() METHOD WHEN IMPLENETING LOADING BOOKMARKS FROM L.S IN THE MODEL 
+   * 
+        2) THE FLOWCHART SECTION!!!!!!!!!!!!! FLOW CHART!!!
+        FLOWCHART PART IMPLEMENTED:BIND THE HANDLER!!!! THE controlBookmarks!!
+        PAGE LOADS => Bookmarks are  loaded from L.S  into the state() (by the model right away ) 
+        //NOTE - the init method of the model is called before the render method 
+         and state is updatedUSER CLICKS ON A RECIPE => THE HASH CHANGED - THEN THE - THEN THIS addRenderHandler  IS CALLED(listen to hash) - then the bounded controlBookmarks subscriber is triggered - and calls the render() method of BookmarksView to render!!)
+   * 
+  */
+  addHandlerRender(handler) {
+    window.addEventListener("load", handler);
+  }
+
   //BEFORE REFACTORING - BY EXTRACTING THE _generatePreviewMarkup to new Child view PreviewView
   //   _generateMarkup() {
   //     const markup = this._data.map(this._generateMarkupPreview).join("");
