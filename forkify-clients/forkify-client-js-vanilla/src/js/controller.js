@@ -5,6 +5,7 @@ import searchView from "./views/searchView.js";
 import resultsView from "./views/resultsView.js";
 import paginationView from "./views/paginationView.js";
 import bookmarksView from "./views/bookmarksView.js";
+import addRecipeView from "./views/addRecipeView.js";
 //POLYFILLING:
 import "core-js/stable"; //FOR EVERY THING OTHER THAN ASYNC - AWAIT
 import "regenerator-runtime/runtime"; //FOR POLYFILING ASYNC - AWAIT
@@ -142,6 +143,11 @@ const controlAddBookmark = () => {
 const controlBookmarks = function () {
   bookmarksView.render(model.state.bookmarks);
 };
+
+const controlAddRecipe = function (newRecipe) {
+  console.log(`controlAddRecipe: newRecipe from view:`);
+  console.log(newRecipe);
+};
 //
 //NOTE: the controls
 const init = function () {
@@ -151,6 +157,7 @@ const init = function () {
   searchView.addHandlerSubmit(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
   recipeView.addHandlerAddBookmark(controlAddBookmark);
+  addRecipeView.addHandlerUpload(controlAddRecipe);
   //WRONG - ERROR!! SINCE NO RECIPE HAS ARRIVED FROM API YET!
   //INSTEAD  - CALL THIS CONTROLLER FOR TESTING - AT THE END OF THE controlRecipes()!!
   //controlServings(30);

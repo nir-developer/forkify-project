@@ -1,6 +1,6 @@
 import icons from "url:../../../public/img/icons.svg";
 
-//NOT RENDER ANYTHING!
+//NOT RENDER ANYTHING!BUT STILL HAS A SUBSCRIBER(SEE THE AddRecipeView : Existing HTML & No subscriber!)
 class SearchView {
   //THE FORM
   _parentElement = document.querySelector(".search");
